@@ -16,8 +16,9 @@ public class Framez extends JFrame implements MouseListener,ActionListener {
     int panelx;
     int panely;
     int buttonloc = -1;
+    JFrame frame;
     public Framez(){
-        JFrame frame = new JFrame("Big Tac Toe");
+        frame = new JFrame("Big Tac Toe");
         frame.setSize(1000, 1000);
         frame.setLayout(null);
         frame.setVisible(true);
@@ -112,44 +113,82 @@ public class Framez extends JFrame implements MouseListener,ActionListener {
             loc = loc + 2;
         }
 
-        if(Board.board[loc][row][col].isEmpty()) {
+        if(Board.board[loc][row][col].equals("") || !Board.isWon(loc)) {
             if(buttonloc == -1 || buttonloc == loc) {
 
+                //set button text to the player that clicked on it
                 ((JButton) e.getSource()).setText(Board.player);
                 Board.board[loc][col][row] = Board.player;
                 System.out.println(Board.getSmall(loc));
-                buttonloc = 0;
 
-                if (buttony == 85) {
-                    buttonloc = buttonloc + 3;
-                } else if (buttony == 165) {
-                    buttonloc = buttonloc + 6;
-                }
-                if (buttonx == 85) {
-                    buttonloc = buttonloc + 1;
-                } else if (buttonx == 165) {
-                    buttonloc = buttonloc + 2;
-                }
+                //Check if the board is won
                 if(Board.winSmall(loc, col, row)){
                     System.out.println("Win! " + Board.player);
-                    buttonloc = -1;
                     for(int j = 0; j < Board.board[0].length; j++) {
                         for (int k = 0; k < Board.board[0][0].length; k++) {
                             Board.board[loc][j][k] = Board.player;
                         }
                     }
+                    System.out.println("Big Win! " + Board.winBig());
+                    if(Board.winBig()){
+                        JPanel panel = new JPanel();
+                        panel.setBounds(50, 50, 750,750);
+                        if (Board.player.equals("X")) {
+                            panel.setBackground(new Color(191, 238, 255));
+                        }
+                        if (Board.player.equals("O")) {
+                            panel.setBackground(new Color(255, 191, 205));
+                        }
+                        JLabel label = new JLabel("Winner! \n" + Board.player);
+                        label.setBounds(0,0,750,750);
+                        //label.setHorizontalTextPosition(375);
+                        //label.setVerticalTextPosition(375);
+                        panel.add(label);
+                        frame.add(panel);
+                    }
                 }
-                System.out.println("button location: " + buttonloc);
-                System.out.println("panel location: " + loc);
-                panels[loc].setBackground(Color.DARK_GRAY);
-                if (Board.player.equals("X")) {
-                    panels[buttonloc].setBackground(new Color(191, 238, 255));
-                }
-                if (Board.player.equals("O")) {
-                    panels[buttonloc].setBackground(new Color(255, 191, 205));
-                }
+                    // Find location of next move
+                    buttonloc = 0;
+                    if (buttony == 85) {
+                        buttonloc = buttonloc + 3;
+                    } else if (buttony == 165) {
+                        buttonloc = buttonloc + 6;
+                    }
+                    if (buttonx == 85) {
+                        buttonloc = buttonloc + 1;
+                    } else if (buttonx == 165) {
+                        buttonloc = buttonloc + 2;
+                    }
+                    if(Board.isWon(buttonloc)){
+                        buttonloc = -1;
+                        for(int i = 0; i < panels.length; i++){
+                            if(!Board.isWon(i) && i != loc){
+                                if (Board.player.equals("X")) {
+                                    panels[i].setBackground(new Color(191, 238, 255));
+                                }
+                                if (Board.player.equals("O")) {
+                                    panels[i].setBackground(new Color(255, 191, 205));
+                                }
+                            }
+                            else{
+                                panels[loc].setBackground(Color.DARK_GRAY);
+                            }
+                        }
+                    } else {
+                        System.out.println("button location: " + buttonloc);
+                        System.out.println("panel location: " + loc);
+                        for(int i = 0; i < panels.length; i++) {
+                            panels[i].setBackground(Color.DARK_GRAY);
+                        }
+                        if (Board.player.equals("X")) {
+                            panels[buttonloc].setBackground(new Color(191, 238, 255));
+                        }
+                        if (Board.player.equals("O")) {
+                            panels[buttonloc].setBackground(new Color(255, 191, 205));
+                        }
+                    }
 
-                Board.swapPlayer();
+                    Board.swapPlayer();
 
             }
         }

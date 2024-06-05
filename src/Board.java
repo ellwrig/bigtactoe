@@ -33,6 +33,19 @@ public class Board {
         return all;
     }
 
+    static public boolean isWon(int loc){
+         int all = 0;
+        for(int j = 0; j < board[0].length; j++){
+            for(int k = 0; k < board[0][0].length; k++){
+                if(!board[loc][j][k].equals("")){
+                    all++;
+                }
+            }
+        }
+        System.out.println("Win " + all);
+        return all == 9;
+    }
+
     public static void swapPlayer(){
         if(player.equals("X")){
             player = "O";
@@ -86,5 +99,8 @@ public class Board {
             return true;
         }
         return false;
+    }
+    static public boolean winBig(){
+        return (winSmall(0,0,0) && winSmall(1,0,0) && winSmall(2,0,0)) || (winSmall(3,0,0) && winSmall(4,0,0) && winSmall(5,0,0)) || (winSmall(6,0,0) && winSmall(7,0,0) && winSmall(8,0,0)) || (winSmall(0,0,0) && winSmall(3,0,0) && winSmall(6,0,0)) || (winSmall(1,0,0) && winSmall(4,0,0) && winSmall(7,0,0)) || (winSmall(2,0,0) && winSmall(5,0,0) && winSmall(8,0,0)) || (winSmall(0,0,0) && winSmall(4,0,0) && winSmall(8,0,0)) || (winSmall(2,0,0) && winSmall(4,0,0) && winSmall(6,0,0));
     }
 }
