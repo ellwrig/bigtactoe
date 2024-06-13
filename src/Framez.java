@@ -16,6 +16,7 @@ public class Framez extends JFrame implements MouseListener,ActionListener {
     int panelx;
     int panely;
     int buttonloc = -1;
+    int win = 0;
     JFrame frame;
     public Framez(){
         frame = new JFrame("Big Tac Toe");
@@ -114,82 +115,106 @@ public class Framez extends JFrame implements MouseListener,ActionListener {
         }
 
         if(Board.board[loc][row][col].equals("") || !Board.isWon(loc)) {
-            if(buttonloc == -1 || buttonloc == loc) {
+            if((buttonloc == -1 || buttonloc == loc) && Board.board[loc][col][row].equals("")) {
 
                 //set button text to the player that clicked on it
-                ((JButton) e.getSource()).setText(Board.player);
-                Board.board[loc][col][row] = Board.player;
-                System.out.println(Board.getSmall(loc));
+                    ((JButton) e.getSource()).setText(Board.player);
+                    Board.board[loc][col][row] = Board.player;
 
                 //Check if the board is won
-                if(Board.winSmall(loc, col, row)){
-                    System.out.println("Win! " + Board.player);
-                    for(int j = 0; j < Board.board[0].length; j++) {
+                if (Board.winSmall(loc, col, row)) {
+
+                    //setting graphics
+                    panels[loc].removeAll();
+                    JButton name;
+                    panels[loc].setLayout(new GridLayout(1,1));
+                    panels[loc].add(name = new JButton(Board.player));
+                    name.setBounds(0, 0, 250, 250);
+                    name.setBackground(Color.DARK_GRAY);
+                    name.setFont(new Font("Arial", 0, 200));
+                    if (Board.player.equals("X")) {
+                        name.setForeground(new Color(255, 191, 205));
+                    }
+                    if (Board.player.equals("O")) {
+                        name.setForeground(new Color(191, 238, 255));
+                    }
+                    //setting board
+                    for (int j = 0; j < Board.board[0].length; j++) {
                         for (int k = 0; k < Board.board[0][0].length; k++) {
                             Board.board[loc][j][k] = Board.player;
                         }
                     }
-                    System.out.println("Big Win! " + Board.winBig());
-                    if(Board.winBig()){
+                    if (Board.winBig()) {
                         JPanel panel = new JPanel();
-                        panel.setBounds(50, 50, 750,750);
+                        panel.setBounds(50, 50, 750, 750);
                         if (Board.player.equals("X")) {
                             panel.setBackground(new Color(191, 238, 255));
                         }
                         if (Board.player.equals("O")) {
                             panel.setBackground(new Color(255, 191, 205));
                         }
-                        JLabel label = new JLabel("Winner! \n" + Board.player);
-                        label.setBounds(0,0,750,750);
-                        //label.setHorizontalTextPosition(375);
-                        //label.setVerticalTextPosition(375);
+                        JLabel label = new JLabel("Winner: " + Board.player + "!");
+                        label.setBounds(0, 0, 750, 750);
                         panel.add(label);
                         frame.add(panel);
+                        label.setFont(new Font("Times New Roman", 1, 150));
+                        win = 1;
+                        for(int i = 0; i < panels.length; i++){
+                            frame.remove(panels[i]);
+                        }
+                    }
+                } else{
+                    if(Board.boardCheck(loc)){
+                        panels[loc].removeAll();
+                        JButton current;
+                        panels[loc].setLayout(new GridLayout(1,1));
+                        panels[loc].add(current = new JButton("-"));
+                        current.setBounds(0, 0, 250, 250);
+                        current.setBackground(Color.DARK_GRAY);
+                        current.setFont(new Font("Arial", 0, 300));
                     }
                 }
-                    // Find location of next move
-                    buttonloc = 0;
-                    if (buttony == 85) {
-                        buttonloc = buttonloc + 3;
-                    } else if (buttony == 165) {
-                        buttonloc = buttonloc + 6;
-                    }
-                    if (buttonx == 85) {
-                        buttonloc = buttonloc + 1;
-                    } else if (buttonx == 165) {
-                        buttonloc = buttonloc + 2;
-                    }
-                    if(Board.isWon(buttonloc)){
-                        buttonloc = -1;
-                        for(int i = 0; i < panels.length; i++){
-                            if(!Board.isWon(i) && i != loc){
-                                if (Board.player.equals("X")) {
-                                    panels[i].setBackground(new Color(191, 238, 255));
-                                }
-                                if (Board.player.equals("O")) {
-                                    panels[i].setBackground(new Color(255, 191, 205));
-                                }
+                if (win == 0){
+                // Find location of next move
+                buttonloc = 0;
+                if (buttony == 85) {
+                    buttonloc = buttonloc + 3;
+                } else if (buttony == 165) {
+                    buttonloc = buttonloc + 6;
+                }
+                if (buttonx == 85) {
+                    buttonloc = buttonloc + 1;
+                } else if (buttonx == 165) {
+                    buttonloc = buttonloc + 2;
+                }
+                if (Board.isWon(buttonloc)) {
+                    buttonloc = -1;
+                    for (int i = 0; i < panels.length; i++) {
+                        if (!Board.isWon(i) && i != loc) {
+                            if (Board.player.equals("O")) {
+                                panels[i].setBackground(new Color(191, 238, 255));
                             }
-                            else{
-                                panels[loc].setBackground(Color.DARK_GRAY);
+                            if (Board.player.equals("X")) {
+                                panels[i].setBackground(new Color(255, 191, 205));
                             }
-                        }
-                    } else {
-                        System.out.println("button location: " + buttonloc);
-                        System.out.println("panel location: " + loc);
-                        for(int i = 0; i < panels.length; i++) {
-                            panels[i].setBackground(Color.DARK_GRAY);
-                        }
-                        if (Board.player.equals("X")) {
-                            panels[buttonloc].setBackground(new Color(191, 238, 255));
-                        }
-                        if (Board.player.equals("O")) {
-                            panels[buttonloc].setBackground(new Color(255, 191, 205));
+                        } else {
+                            panels[loc].setBackground(Color.DARK_GRAY);
                         }
                     }
+                } else {
+                    for (int i = 0; i < panels.length; i++) {
+                        panels[i].setBackground(Color.DARK_GRAY);
+                    }
+                    if (Board.player.equals("X")) {
+                        panels[buttonloc].setBackground(new Color(191, 238, 255));
+                    }
+                    if (Board.player.equals("O")) {
+                        panels[buttonloc].setBackground(new Color(255, 191, 205));
+                    }
+                }
 
-                    Board.swapPlayer();
-
+                Board.swapPlayer();
+            }
             }
         }
 
@@ -208,14 +233,7 @@ public class Framez extends JFrame implements MouseListener,ActionListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-//        if(e.getSource() instanceof JPanel){
-//            String current = e.toString();
-//            current = current.substring(current.indexOf("javax.swing.JPanel[,") + 20);
-//            panelx = Integer.parseInt(current.substring(0, current.indexOf(",")));
-//            current = current.substring(current.indexOf(",") + 1);
-//            panely = Integer.parseInt(current.substring(0, current.indexOf(",")));
-//            System.out.println("Current panel " + panelx + " " + panely);
-//        }
+
     }
 
     @Override

@@ -63,16 +63,25 @@ public class Board {
     public boolean squareCheck(int row, int col, int loc){
         return !board[loc][row][col].isEmpty();
     }
-    public boolean boardCheck(int loc){
+    public static boolean boardCheck(int loc){
+         int x = 0;
+         int o = 0;
         for(int row = 0; row < board[loc].length; row++){
             for(int col = 0; col < board[loc][0].length; col++){
-                if(board[loc][row][col].isEmpty()){
-                    return false;
+                if(board[loc][row][col].equals("X")){
+                    x++;
+                }
+                if(board[loc][row][col].equals("O")){
+                    o++;
                 }
             }
         }
-        return true;
+        if(x + o == 9){
+            return true;
+        }
+        return false;
     }
+
     public boolean allCheck(){
         for(int i = 0; i < board.length; i++){
             for(int j = 0; j < board[0].length; j++){
